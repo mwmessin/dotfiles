@@ -39,10 +39,7 @@ colordiff() {
 }
 
 # Command Prompt
-PS1="\n\n@ \w/ \$(color 54)\$(gbn) $black\[\@ \d\]$endcolor\n> "
-
-# Globbing
-shopt -s globstar
+PS1="\n\n@ \w/ \$(color 54)\$(gbn 2>/dev/null) $black\[\@ \d\]$endcolor\n⚡ "
 
 # Editor
 export EDITOR='subl'
@@ -51,31 +48,35 @@ alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 alias s='subl'
 
 # Filesys
+shopt -s globstar
+
+export CLICOLOR=1
+export LSCOLORS=exfxcxdxbxegedabagacad
+
 alias f='finder'
 finder() {
-	find . -iname "*$1*"
+	find . -iname "*$1*" | gsed 's|^./||'
 }
 
 fuzzypath() {
   if [ -z $2 ]
   then
-    COMPREPLY=( `ls` )
+    COMPREPLY=( `ls -a` )
   else
     DIRPATH=`echo "$2" | gsed 's|[^/]*$||'`
     BASENAME=`echo "$2" | gsed 's|.*/||'`
     FILTER=`echo "$BASENAME" | gsed 's|.|\0.*|g'`
-    COMPREPLY=( `ls $DIRPATH | grep -i "^$FILTER" | gsed "s|^|$DIRPATH|g"` )
+    COMPREPLY=( `ls -a $DIRPATH | grep -i "^$FILTER" | gsed "s|^|$DIRPATH|g"` )
   fi
 }
-
 complete -o nospace -o filenames -F fuzzypath cd ls cat rm cp mv
 
-alias ~='cd ~; ls -a'
-alias .='ls -a'
-alias ..='cd ..; ls -a'
-alias ...='cd ../..; ls -a'
-alias ....='cd ../../..; ls -a'
-alias -- -='cd -; ls -a'
+alias ~='cd ~; .'
+alias .='ls -a -G'
+alias ..='cd ..; .'
+alias ...='cd ../..; .'
+alias ....='cd ../../..; .'
+alias -- -='cd -; .'
 
 # Net
 post() {
@@ -97,17 +98,16 @@ alias re='replace'
 replace() {
   local cmd=""
   local end="g"
-  while [ $# -gt 0 ]
-  do
+  while [ $# -gt 0 ]; do
     [ "$1" = "-i" ] && end="${end}I" && shift && continue
     [ "$1" = "-m" ] && cmd="${cmd}1h;1!H;\${;g;" && end="${end};p}" && shift && continue
 
     if [ -z "$2" ]
     then
-      cmd="${cmd}s/$1/$black[$yellow\0$black]$endcolor/${end};"
+      cmd="${cmd}s|$1|$black[$yellow\0$black]$endcolor|${end};"
       shift
     else
-      cmd="${cmd}s/$1/$2/${end};"
+      cmd="${cmd}s|$1|$2|${end};"
       shift
       shift
     fi
@@ -115,12 +115,50 @@ replace() {
     end="g"
   done
   gsed -rn "${cmd}p"
+  echo "${cmd}p"
+}
+
+each() {
+  while read line; do
+    for cmd in "$@"; {
+      $cmd $line
+    }
+  done
+}
+
+alias U='union'
+union() {
+  sort -u $1 $2
+}
+
+alias D='difference'
+difference() {
+  sort $1 $2 | uniq -u
+}
+
+alias I='intersection'
+intersection() {
+  sort $1 $2 | uniq -d
+}
+
+alias C='complement'
+complement() {
+  comm -23 <(sort $1) <(sort $2)
+}
+
+# Math
+∑() {
+  [[ $# -eq 0 ]] && cat | awk '{ s+=$1 } END { print s }' || \
+  [[ $# -eq 1 ]] && awk '{ s+=$1 } END { print s }' $1 || \
+  echo "$@" | gsed 's| | \+ |g' | bc
 }
 
 # System
 alias \?='defined'
 defined() {
-  alias $1 2>/dev/null || declare -f $1 || which $1
+  for ask in "$@"; {
+    alias $ask 2>/dev/null || declare -f $ask || which $ask
+  }
 }
 
 pid() {
@@ -128,6 +166,13 @@ pid() {
 }
 
 # Terminal
+shopt -s histappend
+
+export HISTCONTROL="ignoredups"
+export HISTCONTROL=erasedups
+
+export HISTSIZE=5000
+
 export up=`echo -e "\x1b[1A"`
 export down=`echo -e "\x1b[1B"`
 export left=`echo -e "\x1b[1D"`
@@ -159,15 +204,19 @@ alias dr='cd /Library/WebServer/Documents/'
 
 # Git
 alias gb='git branch'
+alias gbk='gco master && gu'
 alias gbn='git rev-parse --abbrev-ref HEAD'
+alias gbcl='gb | grep -v -e \* -e master | each "gb -D"'
 alias gd='git diff'
 alias gcb='git checkout -b'
+alias gcf='git ls-files -u | cut -f 2 | sort -u'
 alias gcm='git commit -am'
 alias gs='git stash'
 alias gt='gco sandbox && grh stable && gpu -f'
 alias gsa='git stash apply'
 alias gco='git checkout'
 alias gcp='git cherry-pick'
+alias gcl='git clean -f -d'
 alias gpo='git fetch && git pull origin'
 alias gu='git fetch && git pull'
 alias gpu='git push origin $(gbn)'
@@ -175,4 +224,12 @@ alias grh='git reset --hard'
 alias grv='git revert -m 1'
 alias grb='git rebase -i'
 
-
+gittab() {
+  if [ -z $2 ]
+  then
+    COMPREPLY=( `gb | gsed 's|..||'` )
+  else
+    COMPREPLY=( `gb | gsed 's|..||' | grep -i "$2"` )
+  fi
+}
+complete -o nospace -o filenames -F gittab gco gb
