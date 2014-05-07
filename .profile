@@ -39,7 +39,7 @@ colordiff() {
 }
 
 # Command Prompt
-PS1="\n\n@ \w/ \$(color 54)\$(gbn 2>/dev/null) $black\[\@ \d\]$endcolor\n⚡ "
+PS1="\n\n$endcolor@ \w/ \$(color 54)\$(gbn 2>/dev/null) $black\[\@ \d\]$endcolor\n⚡ "
 
 # Editor
 export EDITOR='subl'
@@ -57,6 +57,8 @@ alias f='finder'
 finder() {
 	find . -iname "*$1*" | gsed 's|^./||'
 }
+
+alias t='tree -C'
 
 fuzzypath() {
   if [ -z $2 ]
@@ -147,10 +149,16 @@ complement() {
 }
 
 # Math
-∑() {
+∑() { # option + w
   [[ $# -eq 0 ]] && cat | awk '{ s+=$1 } END { print s }' || \
   [[ $# -eq 1 ]] && awk '{ s+=$1 } END { print s }' $1 || \
   echo "$@" | gsed 's| | \+ |g' | bc
+}
+
+π() { # option + p
+  [[ $# -eq 0 ]] && cat | awk '{ s*=$1 } END { print s }' || \
+  [[ $# -eq 1 ]] && awk '{ s*=$1 } END { print s }' $1 || \
+  echo "$@" | gsed 's| | \* |g' | bc
 }
 
 # System
@@ -200,7 +208,7 @@ alias chrome='open /Applications/Google\ Chrome.app'
 
 # Server
 alias ac='subl /etc/apache2/httpd.conf'
-alias dr='cd /Library/WebServer/Documents/'
+alias dr='cd /Library/WebServer/Documents; .'
 
 # Git
 alias gb='git branch'
@@ -225,11 +233,6 @@ alias grv='git revert -m 1'
 alias grb='git rebase -i'
 
 gittab() {
-  if [ -z $2 ]
-  then
-    COMPREPLY=( `gb | gsed 's|..||'` )
-  else
-    COMPREPLY=( `gb | gsed 's|..||' | grep -i "$2"` )
-  fi
+  COMPREPLY=( `gb | gsed 's|..||' | grep -i "$2"` )
 }
 complete -o nospace -o filenames -F gittab gco gb
