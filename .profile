@@ -2,6 +2,7 @@
 
 NODE_PATH=/usr/local/lib/node_modules
 export ANDROID_SDK_HOME='/Applications/Utilities/Android/sdk'
+export JAVA='/usr/bin/java'
 
 PATH=$PATH:$HOME/.rvm/bin:$NODE_PATH:$ANDROID_SDK_HOME/platform-tools
 
@@ -33,92 +34,23 @@ colortable() {
   }
 }
 
-colordiff() {
-  cat | replace \
-    "^(\+) (.*)$" "$green\1$white \2$endcolor" \
-    "^(\-) (.*)$" "$red\1$black \2$endcolor"
-}
-
 # Command Prompt
-PS1="\n\n$endcolor@ \w/ \$(color 54)\$(gbn 2>/dev/null) $black\[\@ \d\]$endcolor\n⚡ "
+PS1="\n\n$blue@ $endcolor\w/ $magenta\$(gbn 2>/dev/null) $black\[\@ \d\]$endcolor\n⚡ "
 
 # Editor
 export EDITOR='subl'
+export GIT_EDITOR='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 
 alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 alias s='subl'
 
-# Filesys
-shopt -s globstar
-
-export CLICOLOR=1
-export LSCOLORS=exfxcxdxbxegedabagacad
-
-alias f='finder'
-finder() {
-	find . -iname "*$1*" | gsed 's|^./||'
-}
-
-alias t='tree -C'
-
-fuzzypath() {
-  if [ -z $2 ]
-  then
-    COMPREPLY=( `ls -a` )
-  else
-    DIRPATH=`echo "$2" | gsed 's|[^/]*$||'`
-    BASENAME=`echo "$2" | gsed 's|.*/||'`
-    FILTER=`echo "$BASENAME" | gsed 's|.|\0.*|g'`
-    COMPREPLY=( `ls -a $DIRPATH | grep -i "^$FILTER" | gsed "s|^|$DIRPATH|g"` )
-  fi
-}
-complete -o nospace -o filenames -F fuzzypath cd ls cat rm cp mv
-
-alias ~='cd ~; .'
-alias .='ls -a -G'
-alias ..='cd ..; .'
-alias ...='cd ../..; .'
-alias ....='cd ../../..; .'
-alias -- -='cd -; .'
-
-alias x='extract'
-extract() {
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1 ;;
-      *.tar.gz)    tar xzf $1 ;;
-      *.bz2)       bunzip2 $1 ;;
-      *.rar)       rar x $1 ;;
-      *.gz)        gunzip $1 ;;
-      *.tar)       tar xf $1 ;;
-      *.tbz2)      tar xjf $1 ;;
-      *.tgz)       tar xzf $1 ;;
-      *.zip)       unzip $1 ;;
-      *.Z)         uncompress $1 ;;
-      *.7z)        7z x $1 ;;
-      *)           echo "'$1' cannot be extracted via extract()" ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
-  fi
-}
-
-# Net
-post() {
-  curl --data "$2" "$1"
-}
-
-get() {
-  curl "$1"
-}
-
-delete() {
-  curl -X DELETE "$1"
-}
-
-alias inet='ifconfig | grep inet'
-
 # Text
+alias e='echo'
+
+repeat() {
+  printf "$1%.0s" `seq 1 $2`
+}
+
 alias re='replace'
 replace() {
   local cmd=""
@@ -184,6 +116,79 @@ complement() {
   echo "$@" | gsed 's| | \* |g' | bc
 }
 
+# Filesys
+shopt -s globstar
+
+export CLICOLOR=1
+export LSCOLORS=exfxcxdxbxegedabagacad
+
+alias f='finder'
+finder() {
+	find . -iname "*$1*" | gsed 's|^./||'
+}
+
+alias t='tree -C'
+
+fuzzypath() {
+  if [ -z $2 ]
+  then
+    COMPREPLY=( `ls -a` )
+  else
+    DIRPATH=`echo "$2" | gsed 's|[^/]*$||'`
+    BASENAME=`echo "$2" | gsed 's|.*/||'`
+    FILTER=`echo "$BASENAME" | gsed 's|.|\0.*|g'`
+    COMPREPLY=( `ls -a $DIRPATH | grep -i "^$FILTER" | gsed "s|^|$DIRPATH|g"` )
+  fi
+}
+# complete -o nospace -o filenames -F fuzzypath cd ls cat rm cp mv
+
+alias ~='cd ~; .'
+alias .='ls -a -G'
+alias ..='cd ..; .'
+
+for level in {2..10} ; {
+  alias ..$level="cd `repeat '../' $level`; ."
+}
+
+alias -- -='cd -; .'
+
+alias x='extract'
+extract() {
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1 ;;
+      *.tar.gz)    tar xzf $1 ;;
+      *.bz2)       bunzip2 $1 ;;
+      *.rar)       rar x $1 ;;
+      *.gz)        gunzip $1 ;;
+      *.tar)       tar xf $1 ;;
+      *.tbz2)      tar xjf $1 ;;
+      *.tgz)       tar xzf $1 ;;
+      *.zip)       unzip $1 ;;
+      *.Z)         uncompress $1 ;;
+      *.7z)        7z x $1 ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# Net
+post() {
+  curl --data "$2" "$1"
+}
+
+get() {
+  curl "$1"
+}
+
+delete() {
+  curl -X DELETE "$1"
+}
+
+alias inet='ifconfig | grep "inet "'
+
 # System
 alias \?='defined'
 defined() {
@@ -195,6 +200,22 @@ defined() {
 pid() {
   ps aux | grep $1 | grep -v grep | awk '{ print $2 }'
 }
+
+command_not_found_handle() {
+  if [ -f $1 ] ; then
+    cat $1
+  elif [ -d `echo "$1" | gsed 's|/$||'` ] ; then
+    cd $1
+    .
+  else
+    echo "'$1' ?"
+  fi
+}
+
+nulltab() {
+  COMPREPLY=( `ls -a` )
+}
+complete -o nospace -o filenames -F nulltab -E
 
 # Terminal
 shopt -s histappend
@@ -226,36 +247,44 @@ alias c='clear'
 alias rb='source ~/.bashrc'
 alias pf='subl ~/.bashrc'
 
-# Browser
-alias chrome='open /Applications/Google\ Chrome.app'
+# Browsers
+alias chrome='open -a /Applications/Google\ Chrome.app'
+
+# Art
+alias photoshop='open -a /Applications/Adobe\ Photoshop*/Adobe\ Photoshop*.app'
 
 # Server
 alias ac='subl /etc/apache2/httpd.conf'
 alias dr='cd /Library/WebServer/Documents; .'
 
 # Git
+alias gpf='subl ~/.gitconfig'
 alias gb='git branch'
-alias gbk='gco master && gu'
 alias gbn='git rev-parse --abbrev-ref HEAD'
 alias gbcl='gb | grep -v -e \* -e master | each "gb -D"'
 alias gd='git diff'
-alias gcb='git checkout -b'
+alias gdf='gd --name-only'
+alias gco='git checkout'
+alias gcb='gco -b'
 alias gcf='git ls-files -u | cut -f 2 | sort -u'
 alias gcm='git commit -am'
+alias gm='git merge'
 alias gs='git stash'
+alias gsa='gs apply'
+alias gl='git --no-pager log -n 40 --reverse --pretty=tformat:"%C(black)%cr%x09 %C(yellow)%an%Creset %x09- %s %C(blue)%h%Creset%C(magenta)%d%Creset"'
+alias gst='git status'
 alias gt='gco sandbox && grh stable && gpu -f'
-alias gsa='git stash apply'
-alias gco='git checkout'
 alias gcp='git cherry-pick'
 alias gcl='git clean -f -d'
 alias gpo='git fetch && git pull origin'
 alias gu='git fetch && git pull'
 alias gpu='git push origin $(gbn)'
-alias grh='git reset --hard'
+alias gr='git reset'
+alias grh='gr --hard'
 alias grv='git revert -m 1'
 alias grb='git rebase -i'
 
 gittab() {
   COMPREPLY=( `gb | gsed 's|..||' | grep -i "$2"` )
 }
-complete -o nospace -o filenames -F gittab gco gb
+complete -o nospace -o filenames -F gittab gco gpo gb gm
