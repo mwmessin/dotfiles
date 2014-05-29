@@ -1,6 +1,6 @@
 # MWM
 
-NODE_PATH=/usr/local/lib/node_modules
+export NODE_PATH=/usr/local/lib/node_modules
 export ANDROID_SDK_HOME='/Applications/Utilities/Android/sdk'
 export JAVA='/usr/bin/java'
 
@@ -188,6 +188,11 @@ delete() {
 }
 
 alias inet='ifconfig | grep "inet "'
+alias hosts='s /private/etc/hosts'
+
+google() {
+  chrome "http://www.google.com/#q=$1"
+}
 
 # System
 alias \?='defined'
@@ -218,6 +223,11 @@ nulltab() {
 complete -o nospace -o filenames -F nulltab -E
 
 # Terminal
+alias h='searchhistory'
+searchhistory() {
+  history | grep "$1"
+}
+
 shopt -s histappend
 
 export HISTCONTROL="ignoredups"
