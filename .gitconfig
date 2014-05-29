@@ -1,5 +1,47 @@
-[credential]
-	helper = osxkeychain
 [user]
-	name = MWM
+	name = mwmessin
 	email = mwmessin@gmail.com
+[alias]
+	st = status
+	di = diff
+	co = checkout
+	ci = commit
+	br = branch
+	sta = stash
+	llog = log
+	amend = commit --amend -C HEAD
+	reauthor = commit --amend -C HEAD --reset-author
+	conflicts = !git ls-files --unmerged | cut -c51- | sort -u | xargs subl
+	l = log --graph --abbrev-commit --date=relative
+	la = !git l --all
+	r = !git --no-pager l -20
+	ra = !git r --all
+	aa = add --all
+	pullff = pull --ff-only
+	hard-reset = reset --hard HEAD
+[apply]
+	whitespace = nowarn
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+	ui = auto
+[color "branch"]
+	current = magenta
+	local = blue
+	remote = green
+[color "diff"]
+	meta = magenta
+	frag = blue
+	old = black
+	new = white
+[branch]
+	autosetupmerge = true
+[format]
+	pretty = format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f
+[core]
+	editor = subl
