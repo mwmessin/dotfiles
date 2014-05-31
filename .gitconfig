@@ -32,7 +32,7 @@
 	local = blue
 	remote = green
 [color "diff"]
-	meta = magenta
+	meta = yellow
 	frag = blue
 	old = black
 	new = white
