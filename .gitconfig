@@ -28,7 +28,7 @@
 	status = auto
 	ui = auto
 [color "branch"]
-	current = magenta
+	current = yellow
 	local = blue
 	remote = green
 [color "diff"]
