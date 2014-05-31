@@ -266,6 +266,7 @@ alias photoshop='open -a /Applications/Adobe\ Photoshop*/Adobe\ Photoshop*.app'
 # Server
 alias ac='subl /etc/apache2/httpd.conf'
 alias dr='cd /Library/WebServer/Documents; .'
+alias ss='python -m SimpleHTTPServer'
 
 # Git
 alias gpf='subl ~/.gitconfig'
