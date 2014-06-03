@@ -1,0 +1,58 @@
+
+config defaultToCurrentScreen true
+config secondsBeforeRepeat 0.4
+config secondsBetweenRepeat 0.1
+config keyboardLayout "qwerty"
+config nudgePercentOf screenSize
+config resizePercentOf screenSize
+config windowHintsShowIcons true
+config windowHintsSpread true
+config windowHintsIgnoreHiddenWindows false
+
+alias hyper ctrl;alt;cmd
+
+bind g:${hyper} grid padding:5 0:6,2 1:8,3
+
+bind h:${hyper} hint ASDFHJKLQWERTYUIOPCVBNG
+
+bind r:${hyper} relaunch
+
+alias lefttop move screenOriginX;screenOriginY screenSizeX/2;screenSizeY/2
+bind pad1:${hyper} ${lefttop}
+bind 1:${hyper} ${lefttop}
+
+alias righttop move screenOriginX+screenSizeX/2;screenOriginY screenSizeX/2;screenSizeY/2
+bind pad2:${hyper} ${righttop}
+bind 2:${hyper} ${righttop}
+
+alias leftbottom move screenOriginX;screenOriginY+screenSizeY/2 screenSizeX/2;screenSizeY/2
+bind pad3:${hyper} ${leftbottom}
+bind 3:${hyper} ${leftbottom}
+
+alias rightbottom move screenOriginX+screenSizeX/2;screenOriginY+screenSizeY/2 screenSizeX/2;screenSizeY/2
+bind pad4:${hyper} ${rightbottom}
+bind 4:${hyper} ${rightbottom}
+
+alias lefthalf move screenOriginX;screenOriginY screenSizeX/2;screenSizeY
+bind pad5:${hyper} ${lefthalf}
+bind 5:${hyper} ${lefthalf}
+
+alias righthalf move screenOriginX+screenSizeX/2;screenOriginY screenSizeX/2;screenSizeY
+bind pad6:${hyper} ${righthalf}
+bind 6:${hyper} ${righthalf}
+
+alias tophalf move screenOriginX;screenOriginY screenSizeX;screenSizeY/2
+bind pad7:${hyper} ${tophalf}
+bind 7:${hyper} ${tophalf}
+
+alias bottomhalf move screenOriginX;screenOriginY+screenSizeY/2 screenSizeX;screenSizeY/2
+bind pad8:${hyper} ${bottomhalf}
+bind 8:${hyper} ${bottomhalf}
+
+alias centerhalf move screenOriginX+screenSizeX/4;screenOriginY+screenSizeY/4 screenSizeX/2;screenSizeY/2
+bind pad9:${hyper} ${centerhalf}
+bind 9:${hyper} ${centerhalf}
+
+alias full move screenOriginX;screenOriginY screenSizeX;screenSizeY
+bind pad0:${hyper} ${full}
+bind 0:${hyper} ${full}
