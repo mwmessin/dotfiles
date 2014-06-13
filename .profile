@@ -301,7 +301,6 @@ gittab() {
 complete -o nospace -o filenames -F gittab gco gpo gb gm
 
 # Dev
-
 alias db='cd ~/Dropbox; .'
 alias gulp='gulp --require coffee-script/register'
 alias redis='~/redis-*/src/redis-cli'
