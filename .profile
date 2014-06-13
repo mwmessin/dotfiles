@@ -259,8 +259,8 @@ alias pf='subl ~/.bashrc'
 
 # Browsers
 alias chrome='open -a /Applications/Google\ Chrome.app'
-alias firefox='open /Applications/Firefox.app'
-alias safari='open /Applications/Safari.app'
+alias firefox='open -a /Applications/Firefox.app'
+alias safari='open -a /Applications/Safari.app'
 
 # Art
 alias photoshop='open -a /Applications/Adobe\ Photoshop*/Adobe\ Photoshop*.app'
