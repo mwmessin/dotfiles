@@ -47,6 +47,7 @@ alias s='subl'
 # Text
 alias e='echo'
 alias lc='wc -l'
+alias cols='column -t -s'
 
 repeat() {
   printf "$1%.0s" `seq 1 $2`
