@@ -46,6 +46,7 @@ alias s='subl'
 
 # Text
 alias e='echo'
+alias lc='wc -l'
 
 repeat() {
   printf "$1%.0s" `seq 1 $2`
