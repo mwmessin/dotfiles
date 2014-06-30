@@ -118,6 +118,10 @@ complement() {
   echo "$@" | gsed 's| | \* |g' | bc
 }
 
+factorial() { 
+  (echo 1; seq $1) | paste -s -d\* | bc
+}
+
 # Filesys
 shopt -s globstar
 
