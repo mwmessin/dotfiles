@@ -105,6 +105,10 @@ complement() {
   comm -23 <(sort $1) <(sort $2)
 }
 
+md5() {
+  md5sum <<< $1 | cut -f1 -d ' '
+}
+
 # Math
 ∑() { # option + w
   [[ $# -eq 0 ]] && cat | awk '{ s+=$1 } END { print s }' || \
