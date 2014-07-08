@@ -184,6 +184,8 @@ extract() {
   fi
 }
 
+alias o='open'
+
 # Net
 post() {
   curl --data "$2" "$1"
