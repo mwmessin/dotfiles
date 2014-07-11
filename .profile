@@ -235,6 +235,8 @@ nulltab() {
 }
 complete -o nospace -o filenames -F nulltab -E
 
+alias als='compgen -a | each "alias"'
+
 # Terminal
 alias h='searchhistory'
 searchhistory() {
