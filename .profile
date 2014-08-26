@@ -288,7 +288,7 @@ alias ss='python -m SimpleHTTPServer'
 # Git
 alias gpf='subl ~/.gitconfig'
 alias gb='git branch'
-alias gbn='git rev-parse --abbrev-ref HEAD'
+alias gbn='git rev-parse --abbrev-ref HEAD 2>/dev/null'
 alias gbcl='gb | grep -v -e \* -e master | each "gb -D"'
 alias gup='[ 0 -eq $(git rev-list $(gbn)..origin/$(gbn) --count) ] && [ 0 -eq $(git rev-list origin/$(gbn)..$(gbn) --count) ]'
 alias gd='git diff'
