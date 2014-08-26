@@ -35,7 +35,7 @@ colortable() {
 }
 
 # Command Prompt
-PS1="\n\n$blue@ $endcolor\w/ $magenta\$(gbn 2>/dev/null) $black\[\@ \d\]$endcolor\n⚡ "
+PS1="\n\n$endcolor@ \w/ $(gup && e $magenta || e $yellow)$(gbn) $black\[\@ \d\]$endcolor\n⚡ "
 
 # Editor
 export EDITOR='subl'
@@ -290,6 +290,7 @@ alias gpf='subl ~/.gitconfig'
 alias gb='git branch'
 alias gbn='git rev-parse --abbrev-ref HEAD'
 alias gbcl='gb | grep -v -e \* -e master | each "gb -D"'
+alias gup='[ 0 -lt $(git rev-list $(gbn)..origin/$(gbn) --count) ] && [ 0 -lt $(git rev-list origin/$(gbn)..$(gbn) --count) ]'
 alias gd='git diff'
 alias gdf='gd --name-only'
 alias gco='git checkout'
