@@ -1,12 +1,9 @@
 # MWM
 
 export NODE_PATH=/usr/local/lib/node_modules
-export ANDROID_SDK_HOME='/Applications/Utilities/Android/sdk'
 export JAVA='/usr/bin/java'
 
-PATH=$PATH:$HOME/.rvm/bin:$NODE_PATH:$ANDROID_SDK_HOME/platform-tools
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 # Colors
 export black=`echo -e "\x1b[0;30m"`
@@ -41,7 +38,6 @@ PS1="\n\n$endcolor@ \w/ \$(gup && e \$green || e \$yellow)\$(gbn) $black\[\@ \d\
 export EDITOR='subl'
 export GIT_EDITOR='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 
-alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 alias s='subl'
 
 # Text
@@ -109,6 +105,14 @@ md5() {
   md5sum <<< $1 | cut -f1 -d ' '
 }
 
+downcase() {
+  echo "$1" | tr '[:upper:]' '[:lower:]'
+}
+
+upcase() {
+  echo "$1" | tr '[:lower:]' '[:upper:]'
+}
+
 # Math
 ∑() { # option + w
   [[ $# -eq 0 ]] && cat | awk '{ s+=$1 } END { print s }' || \
@@ -147,10 +151,10 @@ fuzzypath() {
     DIRPATH=`echo "$2" | gsed 's|[^/]*$||'`
     BASENAME=`echo "$2" | gsed 's|.*/||'`
     FILTER=`echo "$BASENAME" | gsed 's|.|\0.*|g'`
-    COMPREPLY=( `ls -a $DIRPATH | grep -i "^$FILTER" | gsed "s|^|$DIRPATH|g"` )
+    COMPREPLY=( `ls -a $DIRPATH | grep -i "$FILTER" | gsed "s|^|$DIRPATH|g"` )
   fi
 }
-# complete -o nospace -o filenames -F fuzzypath cd ls cat rm cp mv
+complete -o nospace -o filenames -F fuzzypath cat cd cp mv ls rm s
 
 alias ~='cd ~; .'
 alias .='ls -a -G'
@@ -191,6 +195,10 @@ post() {
   curl --data "$2" "$1"
 }
 
+put() {
+  curl -s "$1"
+}
+
 get() {
   curl "$1"
 }
@@ -213,6 +221,11 @@ defined() {
   for ask in "$@"; {
     alias $ask 2>/dev/null || declare -f $ask || which $ask
   }
+}
+
+p() {
+  ps aux | head -1
+  ps aux | grep $1 | grep -v grep
 }
 
 pid() {
@@ -288,6 +301,7 @@ alias ss='python -m SimpleHTTPServer'
 # Git
 alias gpf='subl ~/.gitconfig'
 alias gb='git branch'
+alias gpr='hub pull-request -b'
 alias gbn='git rev-parse --abbrev-ref HEAD 2>/dev/null'
 alias gbcl='gb | grep -v -e \* -e master | each "gb -D"'
 alias gup='[ 0 -eq $(git rev-list $(gbn)..origin/$(gbn) --count) ] && [ 0 -eq $(git rev-list origin/$(gbn)..$(gbn) --count) ]'
@@ -319,6 +333,14 @@ gittab() {
 complete -o nospace -o filenames -F gittab gco gpo gb gm
 
 # Dev
+alias b='bundle'
+alias rss='rake server:start'
 alias db='cd ~/Dropbox; .'
 alias gulp='gulp --require coffee-script/register'
 alias redis='~/redis-*/src/redis-cli'
+
+# Chat
+hipchat() {
+  [ -z "$2" ] && COLOR="gray" || COLOR="$2"
+  curl -s --data "message_format=text&color=$COLOR&message=$(cat)" https://api.hipchat.com/v2/room/$1/notification?auth_token=$HIPCHAT_TOKEN
+}
