@@ -3,4 +3,4 @@
 "\e[3;3~": kill-word
 set show-all-if-ambiguous on
 set completion-ignore-case on
-TAB: menu-complete
+TAB: complete
