@@ -148,8 +148,8 @@ fuzzypath() {
   then
     COMPREPLY=( `ls -a` )
   else
-    DIRPATH=`echo "$2" | gsed 's|[^/]*$||'`
-    BASENAME=`echo "$2" | gsed 's|.*/||'`
+    DIRPATH=`echo "$2" | gsed "s|~|$HOME|" | gsed 's|[^/]*$||'`
+    BASENAME=`echo "$2" | gsed "s|~|$HOME|" | gsed 's|.*/||'`
     FILTER=`echo "$BASENAME" | gsed 's|.|\0.*|g'`
     COMPREPLY=( `ls -a $DIRPATH | grep -i "$FILTER" | gsed "s|^|$DIRPATH|g"` )
   fi
