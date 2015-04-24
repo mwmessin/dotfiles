@@ -207,6 +207,7 @@ delete() {
   curl -X DELETE "$1"
 }
 
+alias port='lsof -i'
 alias inet='ifconfig | grep "inet "'
 alias exip='dig +short myip.opendns.com @resolver1.opendns.com'
 alias hosts='s /private/etc/hosts'
@@ -216,6 +217,8 @@ google() {
 }
 
 # System
+alias cpus='sysctl -n hw.ncpu'
+
 alias \?='defined'
 defined() {
   for ask in "$@"; {
