@@ -50,4 +50,4 @@ layout onescreen 'Terminal' ${full}
 layout onescreen 'Chrome' ${full}
 layout onescreen 'Sublime Text' ${full}
 
-default onescreen count:3
+default onescreen count:1
