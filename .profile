@@ -321,7 +321,7 @@ alias grom='git fetch --all && git rebase origin/master'
 alias grc='git rebase --continue'
 
 gittab() {
-	if [ $2 == *"--"* ]
+	if [ $3 == *"--"* ]
 	then
 		COMPREPLY=( `ls -a` )
 	else
