@@ -72,6 +72,15 @@ upcase() {
 	echo "$1" | tr '[:lower:]' '[:upper:]'
 }
 
+center() {
+	columns="$(tput cols)"
+	text=""
+	while IFS= read -r line; do
+		text="$text`repeat ' ' $(max 0 $(( (columns - ${#line}) / 2 )) )`$line\n"
+	done
+	printf "$text"
+}
+
 # Sets
 alias U='union'
 union() {
