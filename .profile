@@ -331,7 +331,7 @@ alias grc='git rebase --continue'
 gittab() {
 	if [ $3 == *"--"* ]
 	then
-		COMPREPLY=( `ls -a` )
+		COMPREPLY=( `compgen -f $2` )
 	else
 		COMPREPLY=( `gb | gsed 's|..||' | grep -i "$2"` )
 	fi
