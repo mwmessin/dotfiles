@@ -336,6 +336,12 @@ alias grv='git revert -m 1'
 alias gca='git commit --amend -a --no-edit'
 alias grom='git fetch --all && git rebase origin/master'
 alias grc='git rebase --continue'
+alias gt='gittag'
+
+gittag() {
+	git tag $1
+	gpu --tags
+}
 
 gittab() {
 	if [ $3 == *"--"* ]
