@@ -3,4 +3,5 @@
 "\e[3;3~": kill-word
 set show-all-if-ambiguous on
 set completion-ignore-case on
-TAB: complete
+TAB: menu-complete
+"\e[Z": "\e-1\C-i"
